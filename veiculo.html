@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veículo - VendaCarros</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <a href="index.html"><img src="logo.png" alt="VendaCarros" class="logo"></a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="login.html">Entrar</a></li>
+            <li><a href="cadastro.html">Cadastrar</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section class="veiculo-detalhe">
+            <h2 id="veiculo-titulo">Carregando...</h2>
+            <div class="veiculo-fotos" id="veiculo-fotos"></div>
+            <div class="veiculo-dados">
+                <p class="veiculo-dado"><strong>Marca:</strong> <span id="veiculo-marca"></span></p>
+                <p class="veiculo-dado"><strong>Modelo:</strong> <span id="veiculo-modelo"></span></p>
+                <p class="veiculo-dado"><strong>Ano:</strong> <span id="veiculo-ano"></span></p>
+                <p class="veiculo-dado"><strong>Cor:</strong> <span id="veiculo-cor"></span></p>
+                <p class="veiculo-dado"><strong>Quilometragem:</strong> <span id="veiculo-km"></span> km</p>
+                <p class="veiculo-dado"><strong>Estado:</strong> <span id="veiculo-estado"></span></p>
+                <p class="veiculo-dado"><strong>Cidade:</strong> <span id="veiculo-cidade"></span></p>
+                <p class="veiculo-dado"><strong>Valor:</strong> R$ <span id="veiculo-valor"></span></p>
+            </div>
+            <p class="veiculo-descricao" id="veiculo-descricao"></p>
+        </section>
+        <section>
+            <div class="form-container">
+                <h2 class="interesse-titulo">Tenho interesse neste veículo</h2>
+                <p id="mensagem-interesse" class="mensagem-form"></p>
+                <form id="form-interesse">
+                    <div class="form-grupo">
+                        <label for="nome">Seu nome</label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="telefone">Telefone para contato</label>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="mensagem">Mensagem</label>
+                        <textarea id="mensagem" name="mensagem" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primario">Enviar interesse</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 VendaCarros. Todos os direitos reservados.</p>
+    </footer>
+    <script>
+        const id = new URLSearchParams(location.search).get('id');
+        const containerFotos = document.getElementById('veiculo-fotos');
+
+        fetch('controlador-publico.php?acao=detalhe&id=' + id)
+            .then(resposta => resposta.json())
+            .then(anuncio => {
+                if (anuncio.erro) {
+                    document.getElementById('veiculo-titulo').textContent = anuncio.erro;
+                    return;
+                }
+                document.title = anuncio.marca + ' ' + anuncio.modelo + ' - VendaCarros';
+                document.getElementById('veiculo-titulo').textContent = anuncio.marca + ' ' + anuncio.modelo;
+                document.getElementById('veiculo-marca').textContent = anuncio.marca;
+                document.getElementById('veiculo-modelo').textContent = anuncio.modelo;
+                document.getElementById('veiculo-ano').textContent = anuncio.ano;
+                document.getElementById('veiculo-cor').textContent = anuncio.cor;
+                document.getElementById('veiculo-km').textContent = Number(anuncio.quilometragem).toLocaleString('pt-BR');
+                document.getElementById('veiculo-estado').textContent = anuncio.estado;
+                document.getElementById('veiculo-cidade').textContent = anuncio.cidade;
+                // document.getElementById('veiculo-valor').textContent = anuncio.valor;
+                document.getElementById('veiculo-valor').textContent = Number(anuncio.valor).toLocaleString('pt-BR');
+                document.getElementById('veiculo-descricao').textContent = anuncio.descricao;
+
+                if (anuncio.fotos && anuncio.fotos.length > 0) {
+                    anuncio.fotos.forEach(foto => {
+                        const img = document.createElement('img');
+                        img.src = 'uploads/' + foto;
+                        img.alt = anuncio.marca + ' ' + anuncio.modelo;
+                        img.className = 'foto-real';
+                        containerFotos.appendChild(img);
+                    });
+                } else {
+                    const semFoto = document.createElement('div');
+                    semFoto.className = 'foto-placeholder';
+                    semFoto.textContent = 'Sem fotos';
+                    containerFotos.appendChild(semFoto);
+                }
+            })
+            .catch(erro => console.error('Erro ao buscar anúncio: ', erro));
+
+        const form = document.getElementById('form-interesse');
+        const mensagem = document.getElementById('mensagem-interesse');
+
+        form.addEventListener('submit', evento => {
+            evento.preventDefault();
+            mensagem.textContent = '';
+
+            const dados = new FormData(form);
+            dados.append('id_anuncio', id);
+
+            fetch('controlador-publico.php?acao=interesse', {
+                method: 'POST',
+                body: dados,
+            })
+                .then(resposta => resposta.json())
+                .then(retorno => {
+                    if (retorno.ok) {
+                        // alert('Interesse enviado com sucesso!');
+                        mensagem.style.color = '#2a7a3a';
+                        mensagem.textContent = 'Interesse enviado com sucesso!';
+                        form.reset();
+                    } else {
+                        mensagem.style.color = '';
+                        mensagem.textContent = retorno.erro;
+                    }
+                })
+                .catch(() => {
+                    mensagem.textContent = 'Erro ao enviar. Tente novamente.';
+                });
+        });
+    </script>
+</body>
+</html>

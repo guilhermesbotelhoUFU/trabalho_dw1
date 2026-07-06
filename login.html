@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - VendaCarros</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <a href="index.html"><img src="logo.png" alt="VendaCarros" class="logo"></a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="login.html">Entrar</a></li>
+            <li><a href="cadastro.html">Cadastrar</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="form-container">
+            <h2>Entrar</h2>
+            <p id="mensagem-login" class="mensagem-form"></p>
+            <form id="form-login">
+                <div class="form-grupo">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-grupo">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" required>
+                </div>
+                <div class="form-grupo form-grupo-checkbox">
+                    <label for="lembrar"><input type="checkbox" id="lembrar" name="lembrar"> Lembrar meu e-mail</label>
+                </div>
+                <button type="submit" class="btn-primario">Entrar</button>
+            </form>
+            <p class="form-link">Ainda não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 VendaCarros. Todos os direitos reservados.</p>
+    </footer>
+    <script>
+        const form = document.getElementById('form-login');
+        const mensagem = document.getElementById('mensagem-login');
+
+        if (new URLSearchParams(location.search).get('cadastro') === 'ok') {
+            mensagem.textContent = 'Cadastro realizado com sucesso! Faça login.';
+        }
+
+        // const emailSalvo = localStorage.getItem('email');
+        // if (emailSalvo) {
+        //     document.getElementById('email').value = emailSalvo;
+        // }
+
+        const cookies = document.cookie.split('; ');
+        for (const cookie of cookies) {
+            const [nome, valor] = cookie.split('=');
+            if (nome === 'lembrar_email' && valor) {
+                document.getElementById('email').value = decodeURIComponent(valor);
+                document.getElementById('lembrar').checked = true;
+            }
+        }
+
+        form.addEventListener('submit', evento => {
+            evento.preventDefault();
+            mensagem.textContent = '';
+
+            fetch('controlador-publico.php?acao=login', {
+                method: 'POST',
+                body: new FormData(form),
+            })
+                .then(resposta => resposta.json())
+                .then(dados => {
+                    if (dados.ok) {
+                        // alert('Bem-vindo, ' + dados.nome);
+                        window.location.href = 'restrito/painel.php';
+                    } else {
+                        mensagem.textContent = dados.erro;
+                    }
+                })
+                .catch(() => {
+                    mensagem.textContent = 'Erro ao entrar. Tente novamente.';
+                });
+        });
+    </script>
+</body>
+</html>

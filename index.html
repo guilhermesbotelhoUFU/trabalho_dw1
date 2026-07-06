@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VendaCarros - Portal de Veículos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <a href="index.html"><img src="logo.png" alt="VendaCarros" class="logo"></a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="login.html">Entrar</a></li>
+            <li><a href="cadastro.html">Cadastrar</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section class="busca">
+            <h2>Buscar Veículos</h2>
+            <div class="busca-campos">
+                <select id="marca" name="marca">
+                    <option value="">Selecione a marca</option>
+                </select>
+                <select id="modelo" name="modelo">
+                    <option value="">Selecione o modelo</option>
+                </select>
+                <select id="cidade" name="cidade">
+                    <option value="">Selecione a cidade</option>
+                </select>
+                <button type="button" id="btn-buscar">Buscar</button>
+                <button type="button" id="btn-todos">Ver todos os anúncios</button>
+            </div>
+        </section>
+        <section id="lista-anuncios"></section>
+    </main>
+    <footer>
+        <p>&copy; 2025 VendaCarros. Todos os direitos reservados.</p>
+    </footer>
+    <script>
+        const selectMarca = document.getElementById('marca');
+        const selectModelo = document.getElementById('modelo');
+        const selectCidade = document.getElementById('cidade');
+        const lista = document.getElementById('lista-anuncios');
+
+        function preencherSelect(select, valores, placeholder) {
+            select.innerHTML = '';
+            const inicial = document.createElement('option');
+            inicial.value = '';
+            inicial.textContent = placeholder;
+            select.appendChild(inicial);
+            valores.forEach(valor => {
+                const opcao = document.createElement('option');
+                opcao.value = valor;
+                opcao.textContent = valor;
+                select.appendChild(opcao);
+            });
+        }
+
+        function criarCard(anuncio) {
+            // card.innerHTML = `
+            //     <img src="uploads/${anuncio.foto}" class="card-foto">
+            //     <div class="card-info">
+            //         <h3>${anuncio.modelo}</h3>
+            //         <p>R$ ${anuncio.valor}</p>
+            //         <a href="veiculo.html?id=${anuncio.id}">Ver detalhes</a>
+            //     </div>`;
+            const card = document.createElement('article');
+            card.className = 'card';
+
+            if (anuncio.foto) {
+                const img = document.createElement('img');
+                img.src = 'uploads/' + anuncio.foto;
+                img.alt = anuncio.marca + ' ' + anuncio.modelo;
+                img.className = 'card-foto';
+                card.appendChild(img);
+            } else {
+                const semFoto = document.createElement('div');
+                semFoto.className = 'card-foto';
+                semFoto.textContent = 'Sem foto';
+                card.appendChild(semFoto);
+            }
+
+            const info = document.createElement('div');
+            info.className = 'card-info';
+
+            const marca = document.createElement('p');
+            marca.className = 'card-marca';
+            marca.textContent = anuncio.marca;
+
+            const modelo = document.createElement('h3');
+            modelo.textContent = anuncio.modelo;
+
+            const ano = document.createElement('p');
+            ano.className = 'card-ano';
+            ano.textContent = anuncio.ano;
+
+            const cidade = document.createElement('p');
+            cidade.className = 'card-cidade';
+            cidade.textContent = anuncio.cidade;
+
+            const valor = document.createElement('p');
+            valor.className = 'card-valor';
+            valor.textContent = 'R$ ' + Number(anuncio.valor).toLocaleString('pt-BR');
+
+            const link = document.createElement('a');
+            link.href = 'veiculo.html?id=' + anuncio.id;
+            link.textContent = 'Ver detalhes';
+
+            info.append(marca, modelo, ano, cidade, valor, link);
+            card.appendChild(info);
+            return card;
+        }
+
+        // function filtrarPorMarca(anuncios) {
+        //     return anuncios.filter(anuncio => anuncio.marca === selectMarca.value);
+        // }
+
+        function mostrarAnuncios(anuncios) {
+            lista.innerHTML = '';
+            if (anuncios.length === 0) {
+                const aviso = document.createElement('p');
+                aviso.textContent = 'Nenhum anúncio encontrado.';
+                lista.appendChild(aviso);
+                return;
+            }
+            anuncios.forEach(anuncio => lista.appendChild(criarCard(anuncio)));
+        }
+
+        function buscarAnuncios() {
+            // const url = 'controlador-publico.php?acao=listar&marca=' + selectMarca.value + '&modelo=' + selectModelo.value;
+            const parametros = new URLSearchParams({
+                acao: 'listar',
+                marca: selectMarca.value,
+                modelo: selectModelo.value,
+                cidade: selectCidade.value,
+            });
+            fetch('controlador-publico.php?' + parametros.toString())
+                .then(resposta => resposta.json())
+                .then(mostrarAnuncios)
+                .catch(erro => console.error('Erro ao buscar anúncios: ', erro));
+        }
+
+        function carregarMarcas() {
+            fetch('controlador-publico.php?acao=marcas')
+                .then(resposta => resposta.json())
+                .then(marcas => preencherSelect(selectMarca, marcas, 'Selecione a marca'));
+        }
+
+        selectMarca.addEventListener('change', () => {
+            preencherSelect(selectCidade, [], 'Selecione a cidade');
+            if (selectMarca.value) {
+                fetch('controlador-publico.php?acao=modelos&marca=' + encodeURIComponent(selectMarca.value))
+                    .then(resposta => resposta.json())
+                    .then(modelos => preencherSelect(selectModelo, modelos, 'Selecione o modelo'));
+            } else {
+                preencherSelect(selectModelo, [], 'Selecione o modelo');
+            }
+        });
+
+        selectModelo.addEventListener('change', () => {
+            if (selectModelo.value) {
+                const parametros = new URLSearchParams({ marca: selectMarca.value, modelo: selectModelo.value });
+                fetch('controlador-publico.php?acao=cidades&' + parametros.toString())
+                    .then(resposta => resposta.json())
+                    .then(cidades => preencherSelect(selectCidade, cidades, 'Selecione a cidade'));
+            } else {
+                preencherSelect(selectCidade, [], 'Selecione a cidade');
+            }
+        });
+
+        document.getElementById('btn-buscar').addEventListener('click', buscarAnuncios);
+        document.getElementById('btn-todos').addEventListener('click', () => {
+            preencherSelect(selectModelo, [], 'Selecione o modelo');
+            preencherSelect(selectCidade, [], 'Selecione a cidade');
+            selectMarca.value = '';
+            buscarAnuncios();
+        });
+
+        // window.onload = function () {
+        //     carregarMarcas();
+        //     buscarAnuncios();
+        // };
+        carregarMarcas();
+        buscarAnuncios();
+    </script>
+</body>
+</html>

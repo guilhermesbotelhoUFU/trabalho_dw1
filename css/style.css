@@ -1,0 +1,398 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    /* background-color: #e8eef4; */
+    background-color: #f0f4f8;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #1a3c5e;
+    padding: 0.75rem 2rem;
+}
+
+.logo {
+    height: 80px;
+    display: block;
+}
+
+nav {
+    background-color: #0d2a45;
+    padding: 0 2rem;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 0;
+}
+
+nav ul li a {
+    display: block;
+    padding: 0.75rem 1.2rem;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+nav ul li a:hover {
+    background-color: #1a3c5e;
+}
+
+main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+footer {
+    background-color: #1a3c5e;
+    color: #a8c4de;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.85rem;
+}
+
+.busca {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.busca h2 {
+    font-size: 1.1rem;
+    color: #1a3c5e;
+    margin-bottom: 1rem;
+}
+
+.busca-campos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-end;
+}
+
+.busca-campos select {
+    flex: 1;
+    min-width: 150px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: #fff;
+}
+
+.busca-campos button {
+    padding: 0.5rem 1.5rem;
+    background-color: #1a3c5e;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.busca-campos button:hover {
+    background-color: #0d2a45;
+}
+
+#lista-anuncios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    flex: 1 1 280px;
+    max-width: calc(33.33% - 1rem);
+    display: flex;
+    flex-direction: column;
+}
+
+/* .card:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+} */
+
+.card-foto {
+    background-color: #c8d8e8;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5a7a9a;
+    font-size: 0.85rem;
+}
+
+img.card-foto {
+    width: 100%;
+    object-fit: cover;
+}
+
+.card-info {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+.card-marca {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #1a3c5e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.1rem;
+}
+
+.card-info h3 {
+    font-size: 1rem;
+    color: #1a3c5e;
+    margin-bottom: 0.3rem;
+}
+
+.card-modelo,
+.card-ano,
+.card-cidade {
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 0.15rem;
+}
+
+.card-valor {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #1a3c5e;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+.card-info a {
+    display: inline-block;
+    margin-top: 0.75rem;
+    color: #1a3c5e;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.card-info a:hover {
+    text-decoration: underline;
+}
+
+.form-container {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.form-container h2 {
+    font-size: 1.3rem;
+    color: #1a3c5e;
+    margin-bottom: 1.5rem;
+}
+
+.form-grupo {
+    margin-bottom: 1rem;
+}
+
+.form-grupo label {
+    display: block;
+    font-size: 0.9rem;
+    color: #444;
+    margin-bottom: 0.3rem;
+}
+
+.form-grupo input[type="text"],
+.form-grupo input[type="email"],
+.form-grupo input[type="password"],
+.form-grupo input[type="tel"],
+.form-grupo textarea,
+.form-grupo select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-grupo textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.form-grupo-checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.mensagem-form {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #b03030;
+    margin-bottom: 1rem;
+}
+
+.mensagem-form:empty {
+    display: none;
+}
+
+.btn-primario {
+    display: block;
+    width: 100%;
+    padding: 0.7rem;
+    background-color: #1a3c5e;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.btn-primario:hover {
+    background-color: #0d2a45;
+}
+
+.form-link {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.form-link a {
+    color: #1a3c5e;
+    text-decoration: none;
+}
+
+.form-link a:hover {
+    text-decoration: underline;
+}
+
+.veiculo-detalhe {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.veiculo-detalhe h2 {
+    font-size: 1.4rem;
+    color: #1a3c5e;
+    margin-bottom: 1rem;
+}
+
+.veiculo-fotos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.foto-placeholder {
+    background-color: #c8d8e8;
+    width: 180px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5a7a9a;
+    font-size: 0.8rem;
+    border-radius: 4px;
+}
+
+.foto-real {
+    width: 180px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.veiculo-dados {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 2rem;
+    row-gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.veiculo-dado {
+    font-size: 0.9rem;
+    min-width: 200px;
+}
+
+.veiculo-dado strong {
+    color: #1a3c5e;
+}
+
+.veiculo-descricao {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.5;
+    margin-top: 0.75rem;
+}
+
+.interesse-titulo {
+    font-size: 1.2rem;
+    color: #1a3c5e;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+
+    nav {
+        padding: 0 1rem;
+    }
+
+    nav ul {
+        flex-direction: column;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    .card {
+        max-width: 100%;
+        flex-basis: 100%;
+    }
+
+    .foto-placeholder {
+        width: calc(50% - 0.5rem);
+    }
+
+    .veiculo-dado {
+        min-width: 100%;
+    }
+
+    .form-container {
+        max-width: 100%;
+    }
+}

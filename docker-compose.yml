@@ -1,0 +1,26 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vendacarros
+    volumes:
+      - ./tabelas.sql:/docker-entrypoint-initdb.d/tabelas.sql
+    ports:
+      - "3306:3306"
+
+  web:
+    image: php:8.2-cli
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_NOME: vendacarros
+      DB_USUARIO: root
+      DB_SENHA: root
+    command: bash -c "docker-php-ext-install pdo_mysql && php -S 0.0.0.0:8000"
+    depends_on:
+      - db
